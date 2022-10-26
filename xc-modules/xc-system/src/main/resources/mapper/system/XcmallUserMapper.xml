@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xc.system.mapper.XcmallUserMapper">
+    
+    <resultMap type="com.xc.system.domain.XcmallUser" id="XcmallUserResult">
+        <result property="userId"    column="user_id"    />
+        <result property="name"    column="name"    />
+        <result property="phone"    column="phone"    />
+        <result property="address"    column="address"    />
+    </resultMap>
+
+    <sql id="selectXcmallUserVo">
+        select user_id, name, phone, address from xcmall_user
+    </sql>
+
+    <select id="selectXcmallUserList" parameterType="com.xc.system.domain.XcmallUser" resultMap="XcmallUserResult">
+        <include refid="selectXcmallUserVo"/>
+        <where>  
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="phone != null "> and phone = #{phone}</if>
+            <if test="address != null  and address != ''"> and address = #{address}</if>
+        </where>
+    </select>
+    
+    <select id="selectXcmallUserByUserId" parameterType="Long" resultMap="XcmallUserResult">
+        <include refid="selectXcmallUserVo"/>
+        where user_id = #{userId}
+    </select>
+        
+    <insert id="insertXcmallUser" parameterType="com.xc.system.domain.XcmallUser">
+        insert into xcmall_user
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null">user_id,</if>
+            <if test="name != null">name,</if>
+            <if test="phone != null">phone,</if>
+            <if test="address != null">address,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null">#{userId},</if>
+            <if test="name != null">#{name},</if>
+            <if test="phone != null">#{phone},</if>
+            <if test="address != null">#{address},</if>
+         </trim>
+    </insert>
+
+    <update id="updateXcmallUser" parameterType="com.xc.system.domain.XcmallUser">
+        update xcmall_user
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="name != null">name = #{name},</if>
+            <if test="phone != null">phone = #{phone},</if>
+            <if test="address != null">address = #{address},</if>
+        </trim>
+        where user_id = #{userId}
+    </update>
+
+    <delete id="deleteXcmallUserByUserId" parameterType="Long">
+        delete from xcmall_user where user_id = #{userId}
+    </delete>
+
+    <delete id="deleteXcmallUserByUserIds" parameterType="String">
+        delete from xcmall_user where user_id in 
+        <foreach item="userId" collection="array" open="(" separator="," close=")">
+            #{userId}
+        </foreach>
+    </delete>
+</mapper>

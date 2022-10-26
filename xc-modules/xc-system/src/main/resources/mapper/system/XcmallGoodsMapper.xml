@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xc.system.mapper.XcmallGoodsMapper">
+    
+    <resultMap type="com.xc.system.domain.XcmallGoods" id="XcmallGoodsResult">
+        <result property="goodsId"    column="goods_id"    />
+        <result property="goodsName"    column="goods_name"    />
+        <result property="goodsPrice"    column="goods_price"    />
+        <result property="goodsStock"    column="goods_stock"    />
+        <result property="goodsStatus"    column="goods_status"    />
+        <result property="goodsDetail"    column="goods_detail"    />
+    </resultMap>
+
+    <sql id="selectXcmallGoodsVo">
+        select goods_id, goods_name, goods_price, goods_stock, goods_status, goods_detail from xcmall_goods
+    </sql>
+
+    <select id="selectXcmallGoodsList" parameterType="com.xc.system.domain.XcmallGoods" resultMap="XcmallGoodsResult">
+        <include refid="selectXcmallGoodsVo"/>
+        <where>  
+            <if test="goodsName != null  and goodsName != ''"> and goods_name like concat('%', #{goodsName}, '%')</if>
+            <if test="goodsPrice != null "> and goods_price = #{goodsPrice}</if>
+            <if test="goodsStock != null "> and goods_stock = #{goodsStock}</if>
+            <if test="goodsStatus != null "> and goods_status = #{goodsStatus}</if>
+            <if test="goodsDetail != null  and goodsDetail != ''"> and goods_detail = #{goodsDetail}</if>
+        </where>
+    </select>
+    
+    <select id="selectXcmallGoodsByGoodsId" parameterType="Long" resultMap="XcmallGoodsResult">
+        <include refid="selectXcmallGoodsVo"/>
+        where goods_id = #{goodsId}
+    </select>
+        
+    <insert id="insertXcmallGoods" parameterType="com.xc.system.domain.XcmallGoods">
+        insert into xcmall_goods
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="goodsId != null">goods_id,</if>
+            <if test="goodsName != null">goods_name,</if>
+            <if test="goodsPrice != null">goods_price,</if>
+            <if test="goodsStock != null">goods_stock,</if>
+            <if test="goodsStatus != null">goods_status,</if>
+            <if test="goodsDetail != null">goods_detail,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="goodsId != null">#{goodsId},</if>
+            <if test="goodsName != null">#{goodsName},</if>
+            <if test="goodsPrice != null">#{goodsPrice},</if>
+            <if test="goodsStock != null">#{goodsStock},</if>
+            <if test="goodsStatus != null">#{goodsStatus},</if>
+            <if test="goodsDetail != null">#{goodsDetail},</if>
+         </trim>
+    </insert>
+
+    <update id="updateXcmallGoods" parameterType="com.xc.system.domain.XcmallGoods">
+        update xcmall_goods
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="goodsName != null">goods_name = #{goodsName},</if>
+            <if test="goodsPrice != null">goods_price = #{goodsPrice},</if>
+            <if test="goodsStock != null">goods_stock = #{goodsStock},</if>
+            <if test="goodsStatus != null">goods_status = #{goodsStatus},</if>
+            <if test="goodsDetail != null">goods_detail = #{goodsDetail},</if>
+        </trim>
+        where goods_id = #{goodsId}
+    </update>
+
+    <delete id="deleteXcmallGoodsByGoodsId" parameterType="Long">
+        delete from xcmall_goods where goods_id = #{goodsId}
+    </delete>
+
+    <delete id="deleteXcmallGoodsByGoodsIds" parameterType="String">
+        delete from xcmall_goods where goods_id in 
+        <foreach item="goodsId" collection="array" open="(" separator="," close=")">
+            #{goodsId}
+        </foreach>
+    </delete>
+</mapper>

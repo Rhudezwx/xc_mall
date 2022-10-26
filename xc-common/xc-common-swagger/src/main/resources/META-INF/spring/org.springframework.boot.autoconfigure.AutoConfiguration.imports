@@ -1,0 +1,3 @@
+com.xc.common.swagger.config.SwaggerAutoConfiguration
+com.xc.common.swagger.config.SwaggerWebConfiguration
+com.xc.common.swagger.config.SwaggerBeanPostProcessor
